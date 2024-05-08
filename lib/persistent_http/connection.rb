@@ -124,6 +124,20 @@ class PersistentHTTP
     attr_accessor :verify_callback
 
     ##
+    # HTTPS verify_depth
+    # Sets or returns the maximum depth for the certificate chain verification.
+    # https://github.com/ruby/ruby/blob/ruby_3_2/lib/net/http.rb#L1521-L1522
+    attr_accessor :verify_depth
+
+    ##
+    # HTTPS verify_hostname
+    # Sets or returns whether to verify that the server certificate is valid
+    # for the hostname.
+    # See {OpenSSL::SSL::SSLContext#verify_hostname=}[rdoc-ref:OpenSSL::SSL::SSLContext#attribute-i-verify_mode].
+    # https://github.com/ruby/ruby/blob/ruby_3_2/lib/net/http.rb#L1529-L1532
+    attr_accessor :verify_hostname
+
+    ##
     # HTTPS verify mode.  Defaults to OpenSSL::SSL::VERIFY_NONE which ignores
     # certificate problems.
     #
@@ -168,6 +182,8 @@ class PersistentHTTP
       @read_timeout    = options[:read_timeout]
       @use_ssl         = options[:use_ssl]
       @verify_callback = options[:verify_callback]
+      @verify_depth    = options[:verify_depth]
+      @verify_hostname = options[:verify_hostname]
       @verify_mode     = options[:verify_mode]
       @after_connect   = options[:after_connect]
       # Because maybe we want a non-persistent connection and are just using this for the proxy stuff
@@ -398,6 +414,8 @@ class PersistentHTTP
       end
 
       @connection.verify_mode = @verify_mode if @verify_mode
+      @connection.verify_depth = @verify_depth if @verify_depth
+      @connection.verify_hostname = @verify_hostname unless @verify_hostname.nil? # This is a negative, false to turn off
     end
   end
 end
